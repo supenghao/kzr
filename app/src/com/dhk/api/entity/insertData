@@ -1,0 +1,1 @@
+INSERT INTO t_s_user(USERNAME,PASSWORD) VALUES ('jerry','123456');

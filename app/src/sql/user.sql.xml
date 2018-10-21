@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sqlConf>
+	<sql name="insertUser" title="插入快速注册用户">
+     <![CDATA[    
+     insert into t_s_user (username,password) values (:username,:password)
+     ]]>
+	</sql>
+	<sql name="findUserByName" title="通过用户名查找用户">
+     <![CDATA[    
+     select id,nick_name,mobilephone,status,username,password,org_id,realname from t_s_user where username=:username
+     ]]>
+	</sql>
+	<sql name="findUserById" title="通过id查找用户">
+     <![CDATA[    
+     select id,mobilephone,status,username,password,org_id from t_s_user where id=:id
+     ]]>
+	</sql>
+	<sql name="checkPasswd" title="检查用户密码">
+     <![CDATA[    
+     select id from t_s_user where userName=:userName and password=:password
+     ]]>
+	</sql>
+	<sql name="changePwd" title="修改用户密码">
+     <![CDATA[    
+     update t_s_user set password=:password where id=:id
+     ]]>
+	</sql>
+	<sql name="getMemberInfoByUserid" title="通过Id找用户信息">
+     <![CDATA[    
+     	select * from t_s_user where id=:userid
+     ]]>
+	</sql>
+	<sql name="getMemberInfoByUserName" title="通过用户名找用户信息">
+     <![CDATA[    
+     	select * from t_s_user where userName=:userName
+     ]]>
+	</sql>
+	<sql name="findAllMessages" title="通过机构查找所有的公告">
+     <![CDATA[    
+     	select * from t_s_org_notice where org_id=:org_id limit 10;
+     ]]>
+	</sql>
+	<sql name="findMessageById" title="查找所有的公告">
+     <![CDATA[    
+     	select * from t_s_org_notice where id=:id;
+     ]]>
+	</sql>
+	<sql name="updateCreditCarWhere" title="更新信用卡表的where子句">
+     <![CDATA[    
+     	where userid=:userid and card_no=:card_no
+     ]]>
+	</sql>
+	<sql name="empty" title="">
+     <![CDATA[    
+     
+     ]]>
+	</sql>
+</sqlConf>

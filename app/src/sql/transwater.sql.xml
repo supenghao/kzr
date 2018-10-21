@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- simple sql statement auto generated-->
+<sqlConf>
+	
+	<sql name="findById" title="根据ID查询">
+		<![CDATA[
+			select trans.*,user.realname userName,item0.item_text cardTypeText, item1.item_text transTypeText,item2.item_text statusText
+			from  t_s_trans_water trans 
+			left join t_s_user user on user.id=trans.user_id
+			left join t_dict_item item0  on item0.dict_code='card_type' and item0.item_code=trans.card_type
+			left join t_dict_item item1 on item1.dict_code='trans_type' and item1.item_code=trans.trans_type
+			left join t_dict_item item2 on item2.dict_code='trans_water_type' and item2.item_code=trans.status
+			where trans.id=:id 
+		]]>
+	</sql>
+	
+	<sql name="insert" title="插入">
+		<![CDATA[
+			insert into t_s_trans_water (TRANS_DATE,TRANS_TIME,HOST_TRANS_DATE,Host_TRANS_TIME,TRANS_NO,HOST_TRANS_NO,CARD_NO,ORG_ID,USER_ID,TRANS_AMOUNT,TRANS_TYPE,RESP_CODE,FEE,CARD_TYPE,RESP_RES,QRCODE_ID,RELATION_NO,EXTERNAL,PLAN_ID,COST_ID,PROXY_PAY_TYPE,PROXY_PAY_CHANNEL,IS_ORG_RECAH,transactionType) values
+										(:trans_date,:trans_time,:host_trans_date,:host_trans_time,:trans_no,:host_trans_no,:card_no,:org_id,:user_id,:trans_amount,:trans_type,:resp_code,:fee,:card_type,:resp_res,:qrcode_id,:relatioin_no,:external,:plan_id,:cost_id,:proxy_pay_type,:proxy_pay_channel,:is_org_recah,:transactionType)
+		]]>
+	</sql>
+
+	<sql name="modifyTransls" title="更新">
+		<![CDATA[
+			update t_s_trans_water set TRANS_NO=:transNo,HOST_TRANS_NO=:hostTransNo,TRANS_DATE=:transDate,TRANS_TIME=:transTime,HOST_TRANS_DATE=:hostTransDate,Host_TRANS_TIME=:hostTransTime,RESP_CODE=:respCode,RESP_RES=:respRes,PROXY_PAY_TYPE=:proxyPayType ,transactionType=:transactionType 
+			where id=:id
+		]]>
+	</sql>
+
+	<sql name="findByIsBusAndDate" title="查询未结算且时间在当前时间之前的">
+		<![CDATA[
+			select * from  t_s_trans_water where ISBUSINESS=:isBusiness and TRANS_DATE<=:transDate
+			and fee>0 and (RESP_CODE='00' or RESP_CODE='0000')
+		]]>
+	</sql>
+
+	<sql name="updateIsBus" title="更新流水状态为运营商已结算">
+		<![CDATA[
+			update t_s_trans_water set  ISBUSINESS=:isBusiness where id=:id
+		]]>
+	</sql>
+
+	<sql name="findUnSettedTransWaters" title="查询未结算的交易流水">
+		<![CDATA[
+			select tw.*,tsu.REALNAME userName from  t_s_trans_water tw left join t_s_user tsu on tsu.id = tw.USER_ID  where tw.STATUS='0' and (tw.RESP_CODE='0000' or tw.RESP_CODE='00') and  tw.TRANS_DATE <= CURDATE()
+			and (tw.TRANS_TYPE='0' or tw.TRANS_TYPE='1' or tw.TRANS_TYPE='4')
+		]]>
+	</sql>
+
+	<sql name="updateSettle" title="更新结算">
+		<![CDATA[
+			update t_s_trans_water set  status='1' where id=:id
+		]]>
+	</sql>
+	
+	<sql name="findByTransNo" title="根据transNo查询">
+		<![CDATA[
+			select trans.*,user.realname userName,item0.item_text cardTypeText, item1.item_text transTypeText,item2.item_text statusText
+			from  t_s_trans_water trans 
+			left join t_s_user user on user.id=trans.user_id
+			left join t_dict_item item0  on item0.dict_code='card_type' and item0.item_code=trans.card_type
+			left join t_dict_item item1 on item1.dict_code='trans_type' and item1.item_code=trans.trans_type
+			left join t_dict_item item2 on item2.dict_code='trans_water_type' and item2.item_code=trans.status
+			where trans.trans_no=:id 
+		]]>
+	</sql>
+</sqlConf>

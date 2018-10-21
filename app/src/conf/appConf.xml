@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="GB2312"?>
+<appConf>
+
+
+    <property name="AIMI_DOMAIN_NAME_URL" value="http://open.rongmipay.com"/>
+    <property name="AIMI_MD5_KEY" value="7c08f57b278e4ce69932a1b11d08e13e"/>
+    <property name="AIMI_ACCESSID" value="100000023"/>
+
+
+
+   <property name="SERVER" value="tomcat"/><!-- websphere,tomcat -->
+   
+   <property name="isDebug" value="yes"/>
+
+   <property name="SHORT_MESSAGE_KEY" value="c4fa896a44c6a90f61c73bb40d168733"/>
+   <property name="APP_NAME" value="妥妥"/>
+  <!--
+		*******************************
+		***********服务器*************
+		*******************************
+   -->
+   <server current="true" name="main" text="初始化" class="com.dhk.uaas.server.InitServer"/>
+
+
+</appConf>

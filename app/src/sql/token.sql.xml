@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sqlConf>
+	<sql name="findToken" title="查找令牌">
+     <![CDATA[    
+     select * from t_s_token where userid=:userid
+     ]]>
+	</sql>
+	<sql name="findTokenbyName" title="查找令牌">
+     <![CDATA[    
+     select t.* from t_s_token t, t_s_user u where u.username=:userName and u.id=t.userid
+     ]]>
+	</sql>
+	<sql name="updateToken" title="更新令牌">
+     <![CDATA[    
+  		update t_s_token set token=:token where userid=:userid
+     ]]>
+	</sql>
+	<sql name="insertToken" title="插入令牌">
+     <![CDATA[ 
+     	insert into t_s_token(userid,token,time) values (:userid,:token,:time)  
+     ]]>
+	</sql>
+</sqlConf>

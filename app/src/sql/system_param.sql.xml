@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sqlConf>
+  <sql name="findByParamName" title="根据变量名取参数值">
+     <![CDATA[    
+     select * from t_system_param where param_name=:param_name
+     ]]>
+  </sql>
+  <sql name="findAll" title="查找所有">
+     <![CDATA[    
+     select * from t_system_param
+     ]]>
+  </sql>
+  <sql name="update" title="修改">
+     <![CDATA[    
+     update t_system_param set param_text=:param_text where id=:id
+     ]]>
+  </sql>
+</sqlConf>

@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:aop="http://www.springframework.org/schema/aop" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:cache="http://www.springframework.org/schema/cache"
+	   xmlns:redisson="http://redisson.org/schema/redisson"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+						http://www.springframework.org/schema/context  
+               			http://www.springframework.org/schema/context/spring-context-3.2.xsd
+						http://www.springframework.org/schema/tx
+    					http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+					    http://www.springframework.org/schema/cache
+				       http://www.springframework.org/schema/cache/spring-cache-3.1.xsd
+					    http://redisson.org/schema/redisson
+					    http://redisson.org/schema/redisson/redisson.xsd"
+	   default-autowire="byName">
+
+	<!-- 应用spring cache注解功能  -->
+	<cache:annotation-driven />
+	
+	<context:annotation-config />
+	<!-- 启动组件扫描，排除@Controller组件，该组件由SpringMVC配置文件扫描 -->
+	<context:component-scan base-package="com.dhk,com.aimi,com.xdream">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	<!-- ＪＤＢＣ配置 加密 -->
+	<bean
+		class="com.xdream.kernel.dao.jdbc.EncryptablePropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:jdbc.properties</value>
+				<value>classpath:redis.properties</value>
+			</list>
+		</property>
+	</bean>
+	<!-- druid -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${driverClassName}" />
+		<property name="url" value="${url}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+		<property name="maxActive" value="${maxActive}" />
+		<property name="initialSize" value="${initialSize}" />
+		<property name="maxWait" value="${maxWait}" />
+		<property name="minIdle" value="${minIdle}" />
+		<property name="timeBetweenEvictionRunsMillis" value="${timeBetweenEvictionRunsMillis}" />
+		<property name="minEvictableIdleTimeMillis" value="${minEvictableIdleTimeMillis}" />
+		<property name="maxOpenPreparedStatements" value="${maxOpenPreparedStatements}" />
+		<property name="removeAbandoned" value="${removeAbandoned}" /> <!-- 打开removeAbandoned功能 -->
+		<property name="removeAbandonedTimeout" value="${removeAbandonedTimeout}" /> <!-- 1800秒，也就是30分钟 -->
+		<property name="logAbandoned" value="${logAbandoned}" /> <!-- 关闭abanded连接时输出错误日志 -->
+	</bean>
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<redisson:client id="redissonClient">
+		<redisson:single-server address="redis://${redis.host}:${redis.port}" connection-pool-size="30"/>
+		<!--<redisson:single-server address="redis://192.168.2.29:6379" connection-pool-size="30"/>-->
+	</redisson:client>
+	<!--事物管理器-->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<!--通过注解方式启动事物-->
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+
+	<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxIdle" value="${redis.maxIdle}" />
+		<property name="maxTotal" value="${redis.maxActive}" />
+		<property name="maxWaitMillis" value="${redis.maxWait}" />
+		<property name="testOnBorrow" value="true"/>
+		<property name="testOnReturn" value="true"/>
+		<!--<property name="testWhileIdle" value="true"/>-->
+	</bean>
+	<bean id="jedisConnectionFactory"
+		  class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+		<property name="poolConfig" ref="poolConfig" />
+		<property name="port" value="${redis.port}" />
+		<property name="hostName" value="${redis.host}" />
+		<property name="timeout" value="${redis.timeout}" />
+	</bean>
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+		<property name="connectionFactory" ref="jedisConnectionFactory" />
+	</bean>
+
+	<bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+		<constructor-arg name="poolConfig" ref="poolConfig" />
+		<constructor-arg name="host" value="${redis.host}" />
+		<constructor-arg name="port" value="${redis.port}" type="int" />
+		<constructor-arg name="timeout" value="${redis.timeout}" type="int" />
+	</bean>
+  <bean class="com.dhk.init.LoadInitData"></bean>  
+
+</beans>
